@@ -1,0 +1,2 @@
+# gdc client example
+gdc-client download -m ../data/MANIFEST.txt -t gdc-user-token.2015-06-17T09-10-02-04-00.txt
