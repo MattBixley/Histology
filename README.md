@@ -1,2 +1,6 @@
 # Histology
-Naive classification of histology slides 
+Naive classification of histology slides.
+
+Keras/Tensor Flow naive classification of cancer outcomes using untrimmed or cleaned histology slides.
+Data sourced from natinal Cancer Institute - Genomic Data Commons (https://portal.gdc.cancer.gov/)
+
