@@ -2,9 +2,9 @@
 # https://blog.rstudio.com/2017/09/05/keras-for-r/
 
 
-devtools::install_github("rstudio/keras")
+#devtools::install_github("rstudio/keras")
 library(keras)
-install_keras()
+#install_keras()
 
 # load and split data
 mnist <- dataset_mnist()
