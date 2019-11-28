@@ -55,3 +55,4 @@ plot(history)
 model %>% evaluate(x_test, y_test)
 
 model %>% predict_classes(x_test)
+
