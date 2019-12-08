@@ -12,8 +12,9 @@ inception_v3_preprocess_input(x)
 ## example
 
 require(keras)
-### Keras transfer learning example
 
+### Keras transfer learning example uses VGG16 as inception didn't work
+# http://flovv.github.io/Logo_detection_transfer_learning/
 ################### Section 1 #########################
 img_width <- 32
 img_height <- 32
