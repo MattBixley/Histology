@@ -45,7 +45,7 @@ model %>% compile(
 # training and validation
 history <- model %>% fit(
   x_train, y_train, 
-  epochs = 100, batch_size = 128, 
+  epochs = 50, batch_size = 128, 
   validation_split = 0.2
 )
 
