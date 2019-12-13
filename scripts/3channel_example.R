@@ -9,21 +9,28 @@ fruit_list <- c("Kiwi", "Banana", "Plum", "Apricot", "Avocado", "Cocos", "Clemen
 output_n <- length(fruit_list)
 
 # image size to scale down to (original images are 100 x 100 px)
-img_width <- 20
-img_height <- 20
+img_width <- 32
+img_height <- 32
 target_size <- c(img_width, img_height)
 
 # RGB = 3 channels
 channels <- 3
 
 # path to image folders
-path <- "path/to/folder/with/data"
-train_image_files_path <- file.path(path, "fruits-360", "Training")
-valid_image_files_path <- file.path(path, "fruits-360", "Test")
+path <- "data/fruits-360"
+train_image_files_path <- file.path(path, "Training")
+valid_image_files_path <- file.path(path, "Test")
 
 # optional data augmentation
-train_data_gen %>% image_data_generator(
-  rescale = 1/255
+train_data_gen = image_data_generator(
+  rescale = 1/255 #,
+  #rotation_range = 40,
+  #width_shift_range = 0.2,
+  #height_shift_range = 0.2,
+  #shear_range = 0.2,
+  #zoom_range = 0.2,
+  #horizontal_flip = TRUE,
+  #fill_mode = "nearest"
 )
 
 # Validation data shouldn't be augmented! But it should also be scaled.
@@ -47,6 +54,13 @@ valid_image_array_gen <- flow_images_from_directory(valid_image_files_path,
                                                     classes = fruit_list,
                                                     seed = 42)
 
+cat("Number of images per class:")
+table(factor(train_image_array_gen$classes))
+
+cat("\nClass label vs index mapping:\n")
+## Class label vs index mapping:
+train_image_array_gen$class_indices
+
 ### model definition
 # number of training samples
 train_samples <- train_image_array_gen$n
@@ -60,13 +74,19 @@ epochs <- 10
 # initialise model
 model <- keras_model_sequential()
 
+conv_base <- application_vgg16(
+  weights = "imagenet",
+  include_top = FALSE,
+  input_shape = c(img_width, img_height, channels)
+)
+
 # add layers
-model %>% 
-  layer_conv_2d(filter = 32, kernel_size = c(3,3), padding = 'same', input_shape = c(img_width, img_height, channels)) %>%
-  layer_activation('relu') %>%
+model %>%
+  layer_conv_2d(filter = 32, kernel_size = c(3,3), padding = "same", input_shape = c(img_width, img_height, channels)) %>%
+  layer_activation("relu") %>%
   
   # Second hidden layer
-  layer_conv_2d(filter = 16, kernel_size = c(3,3), padding = 'same') %>%
+  layer_conv_2d(filter = 16, kernel_size = c(3,3), padding = "same") %>%
   layer_activation_leaky_relu(0.5) %>%
   layer_batch_normalization() %>%
   
@@ -78,12 +98,12 @@ model %>%
   # and feed into dense layer
   layer_flatten() %>%
   layer_dense(100) %>%
-  layer_activation('relu') %>%
+  layer_activation("relu") %>%
   layer_dropout(0.5) %>%
   
   # Outputs from dense layer are projected onto output layer
   layer_dense(output_n) %>% 
-  layer_activation('softmax')
+  layer_activation("softmax")
 
 # compile
 model %>% compile(
