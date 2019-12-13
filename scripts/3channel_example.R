@@ -97,6 +97,7 @@ model %>% compile(
 )
 
 history <- model %>% fit_generator(
+
   train_image_array_gen,
   steps_per_epoch = 100,
   epochs = 30,
