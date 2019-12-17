@@ -2,7 +2,7 @@
 
 library(keras)
 start <- Sys.time()
-fruit_list <- c("Kiwi", "Banana", "Apricot", "Avocado", "Cocos", "Clementine", "Mandarine", "Orange",
+fruit_list <- c("Kiwi", "Banana", "Plum","Apricot", "Avocado", "Cocos", "Clementine", "Mandarine", "Orange",
                 "Limes", "Lemon", "Peach", "Plum", "Raspberry", "Strawberry", "Pineapple", "Pomegranate")
 
 # number of output classes (i.e. fruits)
@@ -83,15 +83,15 @@ conv_base <- application_vgg16(
 summary(conv_base)
 
 model <- keras_model_sequential() %>% 
-  conv_base %>% 
+  conv_base() %>% 
   layer_flatten() %>% 
   layer_dense(units = 256, activation = "relu") %>% 
-  layer_dense(units = 1, activation = "sigmoid")
+  layer_dense(units = output_n, activation = "sigmoid")
 
 summary(model)
 
 model %>% compile(
-  loss = "binary_crossentropy",
+  loss = "categorical_crossentropy",
   optimizer = optimizer_rmsprop(lr = 2e-5),
   metrics = c("accuracy")
 )
@@ -105,5 +105,68 @@ history <- model %>% fit_generator(
   validation_steps = 50
 )
 
-df_out <- hist$metrics %>% 
-{data.frame(acc = .$acc[epochs], val_acc = .$val_acc[epochs], elapsed_time = as.integer(Sys.time()) - as.integer(start))}
+df_out <- history$metrics %>% {data.frame(acc = .$acc[epochs], val_acc = .$val_acc[epochs], elapsed_time = as.integer(Sys.time()) - as.integer(start))}
+df_out
+
+
+
+##### manual build
+# initialise model
+model <- keras_model_sequential()
+
+# add layers
+model %>%
+  layer_conv_2d(filter = 32, kernel_size = c(3,3), padding = "same", input_shape = c(img_width, img_height, channels)) %>%
+  layer_activation("relu") %>%
+  
+  # Second hidden layer
+  layer_conv_2d(filter = 16, kernel_size = c(3,3), padding = "same") %>%
+  layer_activation_leaky_relu(0.5) %>%
+  layer_batch_normalization() %>%
+  
+  # Use max pooling
+  layer_max_pooling_2d(pool_size = c(2,2)) %>%
+  layer_dropout(0.25) %>%
+  
+  # Flatten max filtered output into feature vector 
+  # and feed into dense layer
+  layer_flatten() %>%
+  layer_dense(100) %>%
+  layer_activation("relu") %>%
+  layer_dropout(0.5) %>%
+  
+  # Outputs from dense layer are projected onto output layer
+  layer_dense(output_n) %>% 
+  layer_activation("softmax")
+
+# compile
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = optimizer_rmsprop(lr = 0.0001, decay = 1e-6),
+  metrics = "accuracy"
+)
+
+# fit
+hist <- model %>% fit_generator(
+  # training data
+  train_image_array_gen,
+  
+  # epochs
+  steps_per_epoch = as.integer(train_samples / batch_size), 
+  epochs = 10, 
+  
+  # validation data
+  validation_data = valid_image_array_gen,
+  validation_steps = as.integer(valid_samples / batch_size),
+  
+  # print progress
+  verbose = 2,
+  callbacks = list(
+    # save best model after every epoch
+    callback_model_checkpoint("data/fruits-360/keras/fruits_checkpoints.h5", save_best_only = TRUE),
+    # only needed for visualising with TensorBoard
+    callback_tensorboard(log_dir = "data/fruits-360/keras/logs")
+  )
+)
+
+tensorboard("data/fruits-360/keras/logs")
