@@ -1,39 +1,74 @@
-## keras/tensor flow
-
-## inception v3
-# https://keras.rstudio.com/reference/application_inception_v3.html
-
-conv_base <- application_inception_v3(include_top = TRUE, weights = "imagenet",
-                         input_tensor = NULL, input_shape = NULL, pooling = NULL,
-                         classes = 1000)
-
-inception_v3_preprocess_input(x)
-
-## example
-
-require(keras)
-
 ### Keras transfer learning example uses VGG16 as inception didn't work
 # http://flovv.github.io/Logo_detection_transfer_learning/
 ################### Section 1 #########################
+library(keras)
+start <- Sys.time()
+outcome_list <- c("Censured", "Alive")
+
+# number of output classes 
+output_n <- length(outcome_list)
+
+# image size to scale down to (original images are 100 x 100 px)
 img_width <- 32
 img_height <- 32
+target_size <- c(img_width, img_height)
 batch_size <- 8
 
-train_directory <- "flickrData/train"
-test_directory <- "flickrData/test"
+# RGB = 3 channels
+channels <- 3
 
-train_generator <- flow_images_from_directory(train_directory, generator = image_data_generator(),
-                                              target_size = c(img_width, img_height), color_mode = "rgb",
-                                              class_mode = "categorical", batch_size = batch_size, shuffle = TRUE,
-                                              seed = 123)
+# path to image folders
+path <- "data/images"
+train_directory <- file.path(path, "Training")
+test_directory <- file.path(path, "Test")
 
-validation_generator <- flow_images_from_directory(test_directory, generator = image_data_generator(),
-                                                   target_size = c(img_width, img_height), color_mode = "rgb", classes = NULL,
-                                                   class_mode = "categorical", batch_size = batch_size, shuffle = TRUE,
-                                                   seed = 123)
-train_samples = 498
-validation_samples = 177
+# optional data augmentation
+train_data_gen = image_data_generator(
+  rescale = 1/255 #,
+  #rotation_range = 40,
+  #width_shift_range = 0.2,
+  #height_shift_range = 0.2,
+  #shear_range = 0.2,
+  #zoom_range = 0.2,
+  #horizontal_flip = TRUE,
+  #fill_mode = "nearest"
+)
+
+# Validation data shouldn't be augmented! But it should also be scaled.
+valid_data_gen <- image_data_generator(
+  rescale = 1/255
+)  
+
+# training images
+train_image_array_gen <- flow_images_from_directory(train_directory, 
+                                                    train_data_gen,
+                                                    target_size = target_size,
+                                                    class_mode = 'categorical',
+                                                    classes = fruit_list,
+                                                    seed = 42)
+
+# validation images
+valid_image_array_gen <- flow_images_from_directory(test_directory, 
+                                                    valid_data_gen,
+                                                    target_size = target_size,
+                                                    class_mode = 'categorical',
+                                                    classes = fruit_list,
+                                                    seed = 42)
+
+
+# this next bit needsw to be looked at ofr the actual data, and classes
+cat("Number of images per class:")
+table(factor(train_image_array_gen$classes))
+
+cat("\nClass label vs index mapping:\n")
+## Class label vs index mapping:
+train_image_array_gen$class_indices
+
+### model definition
+# number of training samples
+train_samples <- 10 # train_image_array_gen$n
+# number of validation samples
+valid_samples <- 10 # valid_image_array_gen$n
 
 ################### Section 2 #########################
 #base_model <- application_inception_v3(weights = 'imagenet', include_top = FALSE)
@@ -49,6 +84,7 @@ predictions <- base_model$output %>%
   layer_dropout(0.4, trainable = T) %>%
   layer_dense(27, trainable=T) %>%    ## important to adapt to fit the 27 classes in the dataset!
   layer_activation("softmax", trainable=T)
+
 # this is the model we will train
 model <- keras_model(inputs = base_model$input, outputs = predictions)
 
@@ -66,7 +102,7 @@ model %>% compile(
 hist <- model %>% fit_generator(
   train_generator,
   steps_per_epoch = as.integer(train_samples/batch_size), 
-  epochs = 20, 
+  epochs = 10, 
   validation_data = validation_generator,
   validation_steps = as.integer(validation_samples/batch_size),
   verbose=2
