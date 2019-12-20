@@ -44,7 +44,7 @@ train_image_array_gen <- flow_images_from_directory(train_directory,
                                                     train_data_gen,
                                                     target_size = target_size,
                                                     class_mode = 'categorical',
-                                                    classes = fruit_list,
+                                                    classes = outcome_list,
                                                     seed = 42)
 
 # validation images
@@ -52,7 +52,7 @@ valid_image_array_gen <- flow_images_from_directory(test_directory,
                                                     valid_data_gen,
                                                     target_size = target_size,
                                                     class_mode = 'categorical',
-                                                    classes = fruit_list,
+                                                    classes = outcome_list,
                                                     seed = 42)
 
 
@@ -65,6 +65,7 @@ cat("\nClass label vs index mapping:\n")
 train_image_array_gen$class_indices
 
 ### model definition
+
 # number of training samples
 train_samples <- 10 # train_image_array_gen$n
 # number of validation samples
@@ -82,7 +83,7 @@ predictions <- base_model$output %>%
   layer_dense(64, trainable = T) %>%
   layer_activation("relu", trainable = T) %>%
   layer_dropout(0.4, trainable = T) %>%
-  layer_dense(27, trainable=T) %>%    ## important to adapt to fit the 27 classes in the dataset!
+  layer_dense(output_n, trainable=T) %>%    ## important to adapt to fit the n classes in the dataset!
   layer_activation("softmax", trainable=T)
 
 # this is the model we will train
@@ -105,8 +106,17 @@ hist <- model %>% fit_generator(
   epochs = 10, 
   validation_data = validation_generator,
   validation_steps = as.integer(validation_samples/batch_size),
-  verbose=2
+ 
+   # print progress
+  verbose = 2,
+  callbacks = list(
+    # save best model after every epoch
+    callback_model_checkpoint("data/keras/model_checkpoints.h5", save_best_only = TRUE),
+    # only needed for visualising with TensorBoard
+    callback_tensorboard(log_dir = "data/keras/logs")
+  )
 )
+
 
 ### saveable data frame obejct.
 histDF <- data.frame(acc = unlist(hist$history$acc), val_acc=unlist(hist$history$val_acc), val_loss = unlist(hist$history$val_loss),loss = unlist(hist$history$loss))
