@@ -1,3 +1,8 @@
 # gdc client example
 # have the client in the required folder
 ./gdc-client download -m MANIFEST.txt
+
+# convert svs to jpg
+https://github.com/yukitaka13-1110/convert-svs-into-jpg
+
+python convert.py -i /path/to/input -o /path/to/output -m CPUCORE_NUM

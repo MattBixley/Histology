@@ -3,7 +3,7 @@
 ################### Section 1 #########################
 library(keras)
 start <- Sys.time()
-outcome_list <- c("Censured", "Alive")
+outcome_list <- c("censured", "alive")
 
 # number of output classes 
 output_n <- length(outcome_list)
@@ -18,9 +18,9 @@ batch_size <- 8
 channels <- 3
 
 # path to image folders
-path <- "data/images"
-train_directory <- file.path(path, "Training")
-test_directory <- file.path(path, "Test")
+path <- "data/stomach"
+train_directory <- file.path(path, "training")
+test_directory <- file.path(path, "test")
 
 # optional data augmentation
 train_data_gen = image_data_generator(

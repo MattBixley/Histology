@@ -18,8 +18,8 @@ channels <- 3
 
 # path to image folders
 path <- "data/fruits-360"
-train_image_files_path <- file.path(path, "Training")
-valid_image_files_path <- file.path(path, "Test")
+train_image_files_path <- file.path(path, "training")
+valid_image_files_path <- file.path(path, "test")
 
 # optional data augmentation
 train_data_gen = image_data_generator(
@@ -170,3 +170,7 @@ hist <- model %>% fit_generator(
 )
 
 tensorboard("data/fruits-360/keras/logs")
+
+# evaluation
+model %>% evaluate(x_test, y_test)
+model %>% predict_classes(x_test)
