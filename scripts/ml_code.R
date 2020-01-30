@@ -23,25 +23,25 @@ train_directory <- file.path(path, "training")
 test_directory <- file.path(path, "test")
 
 # optional data augmentation
-train_data_gen = image_data_generator(
-  rescale = 1/255 #,
-  #rotation_range = 40,
-  #width_shift_range = 0.2,
-  #height_shift_range = 0.2,
-  #shear_range = 0.2,
-  #zoom_range = 0.2,
-  #horizontal_flip = TRUE,
-  #fill_mode = "nearest"
+train_generator = image_data_generator(
+  rescale = 1/255 ,
+  rotation_range = 40,
+  width_shift_range = 0.2,
+  height_shift_range = 0.2,
+  shear_range = 0.2,
+  zoom_range = 0.2,
+  horizontal_flip = TRUE,
+  fill_mode = "nearest"
 )
 
 # Validation data shouldn't be augmented! But it should also be scaled.
-valid_data_gen <- image_data_generator(
+validation_generator <- image_data_generator(
   rescale = 1/255
 )  
 
 # training images
 train_image_array_gen <- flow_images_from_directory(train_directory, 
-                                                    train_data_gen,
+                                                    train_generator,
                                                     target_size = target_size,
                                                     class_mode = 'categorical',
                                                     classes = outcome_list,
@@ -49,7 +49,7 @@ train_image_array_gen <- flow_images_from_directory(train_directory,
 
 # validation images
 valid_image_array_gen <- flow_images_from_directory(test_directory, 
-                                                    valid_data_gen,
+                                                    validation_generator,
                                                     target_size = target_size,
                                                     class_mode = 'categorical',
                                                     classes = outcome_list,
@@ -69,7 +69,7 @@ train_image_array_gen$class_indices
 # number of training samples
 train_samples <- 10 # train_image_array_gen$n
 # number of validation samples
-valid_samples <- 10 # valid_image_array_gen$n
+validation_samples <- 10 # valid_image_array_gen$n
 
 ################### Section 2 #########################
 #base_model <- application_inception_v3(weights = 'imagenet', include_top = FALSE)

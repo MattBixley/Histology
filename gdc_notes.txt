@@ -6,3 +6,6 @@
 https://github.com/yukitaka13-1110/convert-svs-into-jpg
 
 python convert.py -i /path/to/input -o /path/to/output -m CPUCORE_NUM
+
+# just convert .svs to tiff with mv or cp
+
