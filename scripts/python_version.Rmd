@@ -1,0 +1,106 @@
+---
+title: "Python"
+author: "Matt Bixley"
+date: "31 January 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{python}
+import numpy as np 
+import tensorflow as tf 
+import cv2
+import sys 
+import os
+import matplotlib.pyplot as plt
+from tensorflow import keras
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.optimizers import Adam 
+
+
+image_width, image_height = 150,150
+
+Epochs =10
+batch_size=8
+Steps_per_epoch=190
+Validation_data=1
+num_classes = 2
+
+model = Sequential()
+model.add(Conv2D(32, (3, 3), padding='same', input_shape= (image_height,image_width ,3)))
+model.add(Activation('relu'))
+model.add(Conv2D(32, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
+
+model.add(Conv2D(64, (3, 3), padding='same'))
+model.add(Activation('relu'))
+model.add(Conv2D(64, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
+
+model.add(Conv2D(256, (3, 3), padding='same')) 
+model.add(Activation('relu'))
+model.add(Conv2D(256, (3, 3)))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.2))
+
+model.add(Flatten())
+model.add(Dense(1024))
+model.add(Activation('relu'))
+model.add(Dropout(0.5))
+model.add(Dense(num_classes, activation='softmax'))
+opt = Adam(lr=0.01, decay=1e-6, )
+
+model.summary()
+
+model.compile(loss='categorical_crossentropy',
+              optimizer='Adam',   
+              metrics=['accuracy'])'''
+
+train_generator = image_data_generator(
+  rescale = 1/255 ,
+  rotation_range = 40,
+  width_shift_range = 0.2,
+  height_shift_range = 0.2,
+  shear_range = 0.2,
+  zoom_range = 0.2,
+  horizontal_flip = TRUE,
+  fill_mode = "nearest"
+)
+
+test_datagen = ImageDataGenerator(rescale = 1./255) 
+
+training_generator = train_datagen.flow_from_directory(
+ train_data_dir, 
+ target_size = (image_height, image_width),
+ batch_size = batch_size, 
+ class_mode = 'categorical')
+
+validation_generator = test_datagen.flow_from_directory(
+ validation_data_dir, 
+ target_size = (image_height, image_width), 
+ batch_size = batch_size, 
+ class_mode = 'categorical') 
+
+
+
+result=model.fit_generator(training_generator, 
+                   steps_per_epoch=Steps_per_epoch,
+                   epochs = Epochs, 
+                   validation_data = validation_generator,
+                   validation_steps=Validation_data) 
+
+score = model.evaluate(test_datagen,
+                  validation_generator,
+                  batch_size=batch_size)
+```
