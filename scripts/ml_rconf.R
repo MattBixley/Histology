@@ -1,0 +1,128 @@
+# notes from rconf ML workshop
+# https://rstudio-conf-2020.github.io/dl-keras-tf/notebooks/project1-natural-images.nb.html
+
+library(keras)
+library(ggplot2)
+library(glue)
+
+# define the directories:
+image_dir <- here::here("data", "stomach")
+train_dir <- file.path(image_dir, "training")
+valid_dir <- file.path(image_dir, "validation")
+test_dir <- file.path(image_dir, "test")
+
+classes <- c("censured", "alive")
+total_train <- 0
+total_valid <- 0
+total_test <- 0
+
+for (class in classes) {
+  # how many images in each class
+  n_train <- length(list.files(file.path(train_dir, class)))
+  n_valid <- length(list.files(file.path(valid_dir, class)))
+  n_test <- length(list.files(file.path(test_dir, class)))
+  
+  cat(toupper(class), ": ", 
+      "train (", n_train, "), ", 
+      "valid (", n_valid, "), ", 
+      "test (", n_test, ")", "\n", sep = "")
+  
+  # tally up totals
+  total_train <- total_train + n_train
+  total_valid <- total_valid + n_valid
+  total_test <- total_test + n_test
+}
+
+cat("\n", "total training images: ", total_train, "\n",
+    "total validation images: ", total_valid, "\n",
+    "total test images: ", total_test, sep = "")
+
+op <- par(mfrow = c(2, 4), mar = c(0.5, 0.2, 1, 0.2))
+for (class in classes) {
+  image_path <- list.files(file.path(train_dir, class), full.names = TRUE)[[1]]
+  plot(as.raster(tiff::readTIFF(image_path, native = TRUE)))
+  title(main = class)
+}
+
+par(op)
+
+model <- keras_model_sequential() %>%
+  layer_conv_2d(filters = 64, kernel_size = c(3, 3), activation = "relu", 
+                input_shape = c(150, 150, 3)) %>%
+  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
+  
+  layer_conv_2d(filters = 128, kernel_size = c(3, 3), activation = "relu") %>% 
+  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
+  
+  layer_conv_2d(filters = 256, kernel_size = c(3, 3), activation = "relu") %>% 
+  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
+  
+  layer_conv_2d(filters = 512, kernel_size = c(3, 3), activation = "relu") %>% 
+  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
+  
+  layer_flatten() %>%
+  layer_dropout(rate = 0.2) %>%
+  layer_dense(units = 512, activation = "relu") %>%
+  layer_dense(units = length(classes), activation = "softmax")
+
+summary(model)
+
+model %>% compile(
+  loss = "categorical_crossentropy",
+  optimizer = "rmsprop",
+  metrics = "accuracy"
+)
+
+# only augment training data
+train_datagen <- image_data_generator(
+  rescale = 1/255,
+  rotation_range = 40,
+  width_shift_range = 0.2,
+  height_shift_range = 0.2,
+  shear_range = 0.2,
+  zoom_range = 0.2,
+  horizontal_flip = TRUE,
+)
+
+# do not augment test and validation data
+test_datagen <- image_data_generator(rescale = 1/255)
+
+# generate batches of data from training directory
+train_generator <- flow_images_from_directory(
+  train_dir,
+  train_datagen,
+  target_size = c(150, 150),
+  batch_size = 32,
+  class_mode = "categorical"
+)
+
+# generate batches of data from validation directory
+validation_generator <- flow_images_from_directory(
+  valid_dir,
+  test_datagen,
+  target_size = c(150, 150),
+  batch_size = 32,
+  class_mode = "categorical"
+)
+
+history <- model %>% fit_generator(
+  train_generator,
+  steps_per_epoch = ceiling(total_train / 32),
+  epochs = 50,
+  validation_data = validation_generator,
+  validation_steps = ceiling(total_valid / 32),
+  callbacks = list(
+    callback_reduce_lr_on_plateau(patience = 3),
+    callback_early_stopping(patience = 7)
+  )
+)
+
+best_epoch <- which.min(history$metrics$val_loss)
+best_loss <- history$metrics$val_loss[best_epoch] %>% round(3)
+best_acc <- history$metrics$val_accuracy[best_epoch] %>% round(3)
+
+glue("Our optimal loss is {best_loss} with an accuracy of {best_acc}")
+
+plot(history) + 
+  scale_x_continuous(limits = c(0, length(history$metrics$val_loss)))
+
