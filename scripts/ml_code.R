@@ -11,7 +11,7 @@ output_n <- length(outcome_list)
 # image size to scale down to (original images are 100 x 100 px)
 img_width <- 32
 img_height <- 32
-target_size <- c(img_width, img_height)
+target_size <- c(img_width, img_height,1)
 batch_size <- 8
 
 # RGB = 3 channels
@@ -73,7 +73,7 @@ validation_samples <- 10 # valid_image_array_gen$n
 
 ################### Section 2 #########################
 #base_model <- application_inception_v3(weights = 'imagenet', include_top = FALSE)
-base_model <- application_vgg16(weights = 'imagenet', include_top = FALSE)
+base_model <- application_vgg16(weights = 'imagenet', include_top = FALSE, input_shape = c(150,150,3))
 ### use vgg16 -  as inception won't converge --- 
 
 ################### Section 3 #########################
