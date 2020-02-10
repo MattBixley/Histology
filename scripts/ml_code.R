@@ -120,3 +120,6 @@ hist <- model %>% fit_generator(
 
 ### saveable data frame obejct.
 histDF <- data.frame(acc = unlist(hist$history$acc), val_acc=unlist(hist$history$val_acc), val_loss = unlist(hist$history$val_loss),loss = unlist(hist$history$loss))
+
+
+## test edit
