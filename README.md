@@ -5,7 +5,7 @@ Keras/Tensor Flow naive classification of cancer outcomes using untrimmed or cle
 Data sourced from National Cancer Institute - Genomic Data Commons (https://portal.gdc.cancer.gov/)
 
 ## Notes/To Do
-find the tool nconvert to possibly convert the raw .svs to .tiff or .jpg to allow system to run with large raw files
+find the tool **nconvert** to possibly convert the raw .svs to .tiff or .jpg to allow system to run with large raw files
 
 nconvert -out tiff -multi -dpi 100 -c 4 -keepdocsize -keepfiledate mysource.tif
 
@@ -15,7 +15,7 @@ otherwise work with openslide and a pipeline for segmenting/tiling the slides.
 ## Random thoughts
 
 ~~try back here at the SCNN
-https://github.com/CancerDataScience/SCNN
+https://github.com/CancerDataScience/SCNN~~
 
 the SCNN container is not useful, scripts are binary and not readable or not available
 
@@ -32,7 +32,7 @@ After matching the slide filenames against the sample IDs from the clinical data
 Extracting regions of interest
 ~~Regions of interest can be extracted using the python script generate_rois.py. This script consumes a tab-delimited text file describing the whole-slide image files, ROI coordinates, desired size and magnification for extracted ROIs, and then generates a collection of ROI .png images. These images are transformed into a binary for model training and testing by the software described below.
 
-Note: region extraction depends on the OpenSlide library.~~~
+Note: region extraction depends on the OpenSlide library.~~
 
 
 
