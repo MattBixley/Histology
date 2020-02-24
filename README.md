@@ -35,5 +35,7 @@ Extracting regions of interest
 
 Note: region extraction depends on the OpenSlide library.
 
-
+# svs images
+https://github.com/debuggingtissue/deepslide-svs-wsi-to-jpeg-patch-generator
+https://github.com/BMIRDS/deepslide
 
