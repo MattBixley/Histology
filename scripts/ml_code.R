@@ -9,8 +9,8 @@ outcome_list <- c("censured", "alive")
 output_n <- length(outcome_list)
 
 # image size to scale down to (original images are 100 x 100 px)
-img_width <- 32
-img_height <- 32
+img_width <- 255
+img_height <- 255
 target_size <- c(img_width, img_height,1)
 batch_size <- 8
 
