@@ -40,5 +40,5 @@ https://github.com/debuggingtissue/deepslide-svs-wsi-to-jpeg-patch-generator
 https://github.com/BMIRDS/deepslide
 
 python3.6 wsi_svs_to_jpeg_tiles.py  -i /path/to/svs_image_directory -o /path/to/jpeg_tiles_folder
-
+-i 
 
