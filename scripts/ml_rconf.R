@@ -12,9 +12,9 @@ valid_dir <- file.path(image_dir, "validation")
 test_dir <- file.path(image_dir, "test")
 
 classes <- c("censured", "alive")
-total_train <- 0
+total_train <- 2
 total_valid <- 0
-total_test <- 0
+total_test <- 2
 
 for (class in classes) {
   # how many images in each class
@@ -92,25 +92,25 @@ train_generator <- flow_images_from_directory(
   train_dir,
   train_datagen,
   target_size = c(150, 150),
-  batch_size = 32,
+  batch_size = 1, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
 # generate batches of data from validation directory
-validation_generator <- flow_images_from_directory(
-  valid_dir,
+test_generator <- flow_images_from_directory(
+  test_dir,
   test_datagen,
   target_size = c(150, 150),
-  batch_size = 32,
+  batch_size = 1, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
 history <- model %>% fit_generator(
   train_generator,
-  steps_per_epoch = ceiling(total_train / 32),
-  epochs = 50,
+  steps_per_epoch = ceiling(total_train / 1),
+  epochs = 5,
   validation_data = validation_generator,
-  validation_steps = ceiling(total_valid / 32),
+  validation_steps = ceiling(total_valid / 1),
   callbacks = list(
     callback_reduce_lr_on_plateau(patience = 3),
     callback_early_stopping(patience = 7)
@@ -137,7 +137,7 @@ conv_base <- application_vgg16(
 summary(conv_base)
 
 datagen <- image_data_generator(rescale = 1/255)
-batch_size <- 32
+batch_size <- 1
 
 extract_features <- function(directory, sample_count, shuffle = TRUE) {
   features <- array(0, dim = c(sample_count, 4, 4, 512))
@@ -170,14 +170,14 @@ extract_features <- function(directory, sample_count, shuffle = TRUE) {
 }
 
 train <- extract_features(train_dir, 32*129)
-validation <- extract_features(valid_dir, 32*43)
+#validation <- extract_features(valid_dir, 32*43)
 test <- extract_features(test_dir, 32*43, shuffle = FALSE)
 
 reshape_features <- function(features) {
   array_reshape(features, dim = c(nrow(features), 4 * 4 * 512))
 }
 train$features <- reshape_features(train$features)
-validation$features <- reshape_features(validation$features)
+#validation$features <- reshape_features(validation$features)
 test$features <- reshape_features(test$features)
 
 model <- keras_model_sequential() %>%
@@ -195,9 +195,9 @@ model %>% compile(
 
 history_pretrained <- model %>% fit(
   train$features, train$labels,
-  epochs = 50,
-  batch_size = 32,
-  validation_data = list(validation$features, validation$labels),
+  epochs = 5,
+  batch_size = 1,
+  #validation_data = list(validation$features, validation$labels),
   callbacks = list(
     callback_reduce_lr_on_plateau(patience = 3),
     callback_early_stopping(patience = 7)
