@@ -197,7 +197,7 @@ history_pretrained <- model %>% fit(
   train$features, train$labels,
   epochs = 5,
   batch_size = 1,
-  #validation_data = list(validation$features, validation$labels),
+  validation_data = list(test$features, test$labels),
   callbacks = list(
     callback_reduce_lr_on_plateau(patience = 3),
     callback_early_stopping(patience = 7)
