@@ -13,7 +13,7 @@ test_dir <- file.path(image_dir, "test")
 
 classes <- c("censured", "alive")
 total_train <- 2
-total_valid <- 0
+total_valid <- 2
 total_test <- 2
 
 for (class in classes) {
@@ -81,7 +81,7 @@ train_datagen <- image_data_generator(
   height_shift_range = 0.2,
   shear_range = 0.2,
   zoom_range = 0.2,
-  horizontal_flip = TRUE,
+  horizontal_flip = TRUE
 )
 
 # do not augment test and validation data
@@ -92,7 +92,7 @@ train_generator <- flow_images_from_directory(
   train_dir,
   train_datagen,
   target_size = c(150, 150),
-  batch_size = 1, # edit batch size to smaller than sample size
+  batch_size = 8, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
@@ -101,16 +101,16 @@ test_generator <- flow_images_from_directory(
   test_dir,
   test_datagen,
   target_size = c(150, 150),
-  batch_size = 1, # edit batch size to smaller than sample size
+  batch_size = 8, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
 history <- model %>% fit_generator(
   train_generator,
   steps_per_epoch = ceiling(total_train / 1),
-  epochs = 5,
-  validation_data = validation_generator,
-  validation_steps = ceiling(total_valid / 1),
+  epochs = 50,
+  validation_data = test_generator,
+  validation_steps = ceiling(total_test / 1),
   callbacks = list(
     callback_reduce_lr_on_plateau(patience = 3),
     callback_early_stopping(patience = 7)
