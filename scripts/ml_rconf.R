@@ -108,7 +108,7 @@ test_generator <- flow_images_from_directory(
 history <- model %>% fit_generator(
   train_generator,
   steps_per_epoch = ceiling(total_train / 1),
-  epochs = 50,
+  epochs = 9,
   validation_data = test_generator,
   validation_steps = ceiling(total_test / 1),
   callbacks = list(
