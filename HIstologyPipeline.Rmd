@@ -1,0 +1,69 @@
+---
+title: "Histology Pipeline"
+author: "Matt Bixley"
+date: "10 March 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+# notes from rconf ML workshop
+# https://rstudio-conf-2020.github.io/dl-keras-tf/notebooks/project1-natural-images.nb.html
+library(tidyverse)
+library(keras)
+library(ggplot2)
+library(glue)
+
+current_dir <- "stomach_march"
+Sys.setenv(current_dir = current_dir)
+```
+
+# Histology
+Naive classification of histology slides.
+
+Keras/Tensor Flow naive classification of cancer outcomes using untrimmed or cleaned histology slides.
+Data sourced from National Cancer Institute - Genomic Data Commons (https://portal.gdc.cancer.gov/)
+
+Downloading the data
+GDC does not currently enable direct querying of the TCGA diagnostic images for a specific project. To generate a list of the files to download, you have to first generate a manifest of all whole-slide images in TCGA (both frozen and diagnostic), filter the frozen section images in this list, and then match the identifiers against the sample identifiers (TCGA-##-####) for the project(s) of interest.
+
+The manifest for all TCGA whole-slide images can be generated using the GDC Legacy Archive query.
+
+Rows containing diagnostic image files can be identified using the Linux command line
+
+cut -d$'\t' -f 2 gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.'
+After matching the slide filenames against the sample IDs from the clinical data for the project(s) of interest, the relevant filenames can be used with the GDC Data Transfer Tool or the GDC API.
+
+```{bash, makedirs}
+mkdir data/$current_dir/
+mkdir data/$current_dir/test/
+mkdir data/$current_dir/training/
+mkdir data/$current_dir/test/alive
+mkdir data/$current_dir/test/censured
+mkdir data/$current_dir/training/alive
+mkdir data/$current_dir/training/censured
+
+```
+download and move the manifest to the current directory eg *stomach_march* and rename to *gdc_manifest.txt*
+
+prune the manifest to those samples with diagnostic slides only
+```{bash manifest}
+cut -d$'\t' -f 2 data/$current_dir/gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.' > data/$current_dir/gdc_manifest_diagnostic.txt
+```
+
+split the data into test and training sets 75:25 split
+
+```{r}
+## 75% of the sample size
+smp_size <- floor(0.75 * nrow(mtcars))
+
+## set the seed to make your partition reproducible
+set.seed(123)
+sample_id <- read_delim(file = paste0("data/",current_dir,"/gdc_manifest_diagnostic"))
+train_ind <- sample(seq_len(nrow(mtcars)), size = smp_size)
+
+train <- mtcars[train_ind, ]
+test <- mtcars[-train_ind, ]
+```
+
+
