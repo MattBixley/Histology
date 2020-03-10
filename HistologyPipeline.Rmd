@@ -44,17 +44,31 @@ mkdir data/$current_dir/training/alive
 mkdir data/$current_dir/training/censured
 
 ```
-download and move the manifest to the current directory eg *stomach_march* and rename to *gdc_manifest.txt*
+download and move the manifest to the current directory eg *stomach_march* and rename to *gdc_manifest.txt*, repeat for the clinical data which comes as a .tar.gz file
 
 prune the manifest to those samples with diagnostic slides only
 ```{bash manifest}
-cut -d$'\t' -f 2 data/$current_dir/gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.' > data/$current_dir/gdc_manifest_diagnostic.txt
+cut -d$'\t' -f 2 data/$current_dir/gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.' > data/$current_dir/getfile.txt
+#gdc_manifest_diagnostic.txt
 ```
+
+```{r}
+getfile <- read_delim(file = paste0("data/",current_dir,"/getfile.txt"), delim = "\t", col_names = F)
+sample_id <- read_delim(file = paste0("data/",current_dir,"/gdc_manifest.txt"), delim = "\t")
+
+sample_id %>% filter(., filename %in% getfile$X1) %>%
+  write_delim(.,paste0("data/",current_dir,"/gdc_manifest_diagnostic.txt"), delim = "\t")
+```
+
+
 
 split the data into test and training sets 75:25 split
 
 ```{r splitdata}
+#read manifest
 sample_id <- read_delim(file = paste0("data/",current_dir,"/gdc_manifest_diagnostic.txt"), delim = "\t")
+# read clinical
+clinical_id <- read_delim(file = paste0("data/",current_dir,"/clinical.project-TCGA-STAD.2020-03-10/clinical.tsv"), delim = "\t")
 
 ## 75% of the sample size
 smp_size <- floor(0.75 * nrow(sample_id))
@@ -66,6 +80,9 @@ train_ind <- sample(seq_len(nrow(sample_id)), size = smp_size)
 
 train <- sample_id[train_ind, ]
 test <- sample_id[-train_ind, ]
+
+
+clinical_id[1:5,1:5]
 ```
 
 

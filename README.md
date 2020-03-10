@@ -29,6 +29,11 @@ Rows containing diagnostic image files can be identified using the Linux command
 cut -d$'\t' -f 2 gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.'
 After matching the slide filenames against the sample IDs from the clinical data for the project(s) of interest, the relevant filenames can be used with the GDC Data Transfer Tool or the GDC API.
 
+go to portable disk and download
+
+cd /media/matt/0D830EB30D830EB3/stomach 
+./gdc-client -m download ~/Git_repos/Histology/data/stomach_march/gdc_manifest.2020-01-26.txt
+
 Extracting regions of interest  
 
 ~~Regions of interest can be extracted using the python script generate_rois.py. This script consumes a tab-delimited text file describing the whole-slide image files, ROI coordinates, desired size and magnification for extracted ROIs, and then generates a collection of ROI .png images. These images are transformed into a binary for model training and testing by the software described below.
