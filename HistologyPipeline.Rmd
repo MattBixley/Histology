@@ -2,7 +2,9 @@
 title: "Histology Pipeline"
 author: "Matt Bixley"
 date: "10 March 2020"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -34,7 +36,7 @@ Rows containing diagnostic image files can be identified using the Linux command
 cut -d$'\t' -f 2 gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.'
 After matching the slide filenames against the sample IDs from the clinical data for the project(s) of interest, the relevant filenames can be used with the GDC Data Transfer Tool or the GDC API.
 
-```{bash, makedirs}
+```{bash, makedirs, eval = F}
 mkdir data/$current_dir/
 mkdir data/$current_dir/test/
 mkdir data/$current_dir/training/
