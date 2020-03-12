@@ -49,12 +49,12 @@ mkdir data/$current_dir/training/censured
 download and move the manifest to the current directory eg *stomach_march* and rename to *gdc_manifest.txt*, repeat for the clinical data which comes as a .tar.gz file
 
 prune the manifest to those samples with diagnostic slides only
-```{bash manifest}
+```{bash, manifest, eval = F}
 cut -d$'\t' -f 2 data/$current_dir/gdc_manifest.txt | grep -E '\.*-DX[^-]\w*.' > data/$current_dir/getfile.txt
 #gdc_manifest_diagnostic.txt
 ```
 
-```{r}
+```{r, eval = F}
 getfile <- read_delim(file = paste0("data/",current_dir,"/getfile.txt"), delim = "\t", col_names = F)
 sample_id <- read_delim(file = paste0("data/",current_dir,"/gdc_manifest.txt"), delim = "\t")
 
@@ -84,7 +84,7 @@ train <- sample_id[train_ind, ]
 test <- sample_id[-train_ind, ]
 
 
-clinical_id[1:5,1:5]
+train[1:5,1:5]
 ```
 
 
