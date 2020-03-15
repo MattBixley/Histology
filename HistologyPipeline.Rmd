@@ -71,6 +71,8 @@ split the data into test and training sets 75:25 split
 sample_id <- read_delim(file = paste0("data/",current_dir,"/gdc_manifest_diagnostic.txt"), delim = "\t")
 # read clinical
 clinical_id <- read_delim(file = paste0("data/",current_dir,"/clinical.project-TCGA-STAD.2020-03-10/clinical.tsv"), delim = "\t")
+clinical_id <- clinical_id %>% distinct(clinical_id$case_id)
+pheno <- sample_id %>% left_join(.,clinical_id, by = c("id" = "case_id"))
 
 ## 75% of the sample size
 smp_size <- floor(0.75 * nrow(sample_id))
@@ -82,6 +84,11 @@ train_ind <- sample(seq_len(nrow(sample_id)), size = smp_size)
 
 train <- sample_id[train_ind, ]
 test <- sample_id[-train_ind, ]
+
+train_alive <- pheno[train_ind, ]
+train_censured
+test_alive
+test_censured
 
 
 train[1:5,1:5]
