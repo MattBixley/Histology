@@ -71,8 +71,10 @@ split the data into test and training sets 75:25 split
 sample_id <- read_delim(file = paste0("data/",current_dir,"/gdc_manifest_diagnostic.txt"), delim = "\t")
 # read clinical
 clinical_id <- read_delim(file = paste0("data/",current_dir,"/clinical.project-TCGA-STAD.2020-03-10/clinical.tsv"), delim = "\t")
-clinical_id <- clinical_id %>% distinct(clinical_id$case_id)
-pheno <- sample_id %>% left_join(.,clinical_id, by = c("id" = "case_id"))
+status_id <- clinical_id %>% select(case_id, vital_status) %>% 
+  distinct(case_id, .keep_all= TRUE)
+
+status_id <- sample_id %>% left_join(.,status_id, by = c("id" = "case_id"))
 
 ## 75% of the sample size
 smp_size <- floor(0.75 * nrow(sample_id))
@@ -80,18 +82,28 @@ smp_size <- floor(0.75 * nrow(sample_id))
 ## set the seed to make your partition reproducible
 set.seed(123)
 
-train_ind <- sample(seq_len(nrow(sample_id)), size = smp_size)
+train_ind <- sample(seq_len(nrow(status_id)), size = smp_size)
 
-train <- sample_id[train_ind, ]
-test <- sample_id[-train_ind, ]
+train <- status_id[train_ind, ]
+test <- status_id[-train_ind, ]
 
-train_alive <- pheno[train_ind, ]
-train_censured
-test_alive
-test_censured
+train_alive <- train %>% filter(vital_status == "Alive") %>% select(case_id) %>% 
+  write_delim(.,paste0("data/",current_dir,"/train_alive"), col_names = F)
+train %>% filter(vital_status == "Dead") %>% select(case_id) %>% 
+  write_delim(.,paste0("data/",current_dir,"/train_dead"), col_names = F)
+
+test %>% filter(vital_status == "Alive") %>% select(case_id) %>% 
+  write_delim(.,paste0("data/",current_dir,"/test_alive"), col_names = F)
+test %>% filter(vital_status == "Dead") %>% select(case_id) %>% 
+  write_delim(.,paste0("data/",current_dir,"/test_dead"), col_names = F)
 
 
-train[1:5,1:5]
 ```
 
+```{bash, movefiles, eval = F}
+for file in $(cat data/$current_dir/train_alive); do mv ~/../../media/matt/0D830EB30D830EB3/$file ~/../../media/matt/0D830EB30D830EB3/training/alive; done
+for file in $(cat data/$current_dir/train_dead); do mv ~/../../media/matt/0D830EB30D830EB3/$file ~/../../media/matt/0D830EB30D830EB3/training/censured; done
+for file in $(cat data/$current_dir/test_alive); do mv ~/../../media/matt/0D830EB30D830EB3/$file ~/../../media/matt/0D830EB30D830EB3/alive; done
+for file in $(cat data/$current_dir/test_censured); do mv ~/../../media/matt/0D830EB30D830EB3/$file ~/../../media/matt/0D830EB30D830EB3/cesured; done
+```
 
