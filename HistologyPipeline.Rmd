@@ -96,8 +96,6 @@ test %>% filter(vital_status == "Alive") %>% select(case_id) %>%
   write_delim(.,paste0("data/",current_dir,"/test_alive"), col_names = F)
 test %>% filter(vital_status == "Dead") %>% select(case_id) %>% 
   write_delim(.,paste0("data/",current_dir,"/test_dead"), col_names = F)
-
-
 ```
 
 ```{bash, movefiles, eval = F}
