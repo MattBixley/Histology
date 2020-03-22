@@ -49,3 +49,6 @@ python3.6 wsi_svs_to_jpeg_tiles.py  -i /path/to/svs_image_directory -o /path/to/
 # move files
 find . -name '*.svs' -exec mv {} /path/to/single/target/directory/ \;
 mv **/*.svs /path/to/single/target/directory/
+
+highlight is the term in the clinical file to match 
+*TCGA-HF-7134*-01Z-00-DX1.A84E2A6E-05F4-4A4B-8F64-9B9D1B33838E.svs
