@@ -36,4 +36,7 @@ write_csv(test_alive, path = "data/test_alive.txt", col_names = F)
 
 # while read file; do mv "svs_file/$file" test/alive/; done < test.alive.txt
 
+# convert images
+python3.6 wsi_svs_to_jpeg_tiles.py  -i /test/dead -o /test/dead
+python3.6 wsi_svs_to_jpeg_tiles.py  -i /svs_files2 -o /svs_files2
 
