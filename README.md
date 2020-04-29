@@ -44,7 +44,9 @@ Note: region extraction depends on the OpenSlide library.
 https://github.com/debuggingtissue/deepslide-svs-wsi-to-jpeg-patch-generator
 https://github.com/BMIRDS/deepslide
 
-python3.6 wsi_svs_to_jpeg_tiles.py  -i /path/to/svs_image_directory -o /path/to/jpeg_tiles_folder
+pip install -r scripts/requirements.txt
+
+python wsi_svs_to_jpeg_tiles.py  -i /path/to/svs_image_directory -o /path/to/jpeg_tiles_folder
 
 # move files
 find . -name '*.svs' -exec mv {} /path/to/single/target/directory/ \;

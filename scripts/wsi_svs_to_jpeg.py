@@ -38,27 +38,23 @@ class ResolutionLevel(IntEnum):
 def get_SVS_level_ratio(resolution_level):
   if resolution_level == ResolutionLevel.LEVEL_0_BASE:
     return SVSLevelRatio.LEVEL_0_BASE
-elif resolution_level == ResolutionLevel.LEVEL_1:
+  elif resolution_level == ResolutionLevel.LEVEL_1:
     return SVSLevelRatio.LEVEL_1
-elif resolution_level == ResolutionLevel.LEVEL_2:
+  elif resolution_level == ResolutionLevel.LEVEL_2:
     return SVSLevelRatio.LEVEL_2
-elif resolution_level == ResolutionLevel.LEVEL_3:
+  elif resolution_level == ResolutionLevel.LEVEL_3:
     return SVSLevelRatio.LEVEL_3
 
 
 def get_start_positions(width, height, window_size, axis, overlapping_percentage):
   start_positions = []
-
-start_position = 0
-start_positions.append(start_position)
-
-dimension = width if axis == Axis.X else height
-
-while not (start_position + (window_size * (1 - overlapping_percentage))) > dimension:
-  start_position = start_position + (window_size * (1 - overlapping_percentage))
-start_positions.append(int(start_position))
-
-return start_positions
+  start_position = 0
+  start_positions.append(start_position)
+  dimension = width if axis == Axis.X else height
+  while not (start_position + (window_size * (1 - overlapping_percentage))) > dimension:
+    start_position = start_position + (window_size * (1 - overlapping_percentage))
+    start_positions.append(int(start_position))
+    return start_positions
 
 
 def output_jpeg_tiles(full_image_path, full_output_path,
@@ -67,28 +63,27 @@ def output_jpeg_tiles(full_image_path, full_output_path,
                       window_size):  # converts svs image with meta data into just the jpeg image
   
   img = openslide.OpenSlide(full_image_path)
-width, height = img.level_dimensions[resolution_level]
+  width, height = img.level_dimensions[resolution_level]
 
 #   print("converting ", full_image_path, " with width ", width, ", height ", height, " and overlap ",
 #         overlapping_percentage)
 
-x_start_positions = get_start_positions(width, height, window_size, Axis.X, overlapping_percentage)
-y_start_positions = get_start_positions(width, height, window_size, Axis.Y, overlapping_percentage)
+  x_start_positions = get_start_positions(width, height, window_size, Axis.X, overlapping_percentage)
+  y_start_positions = get_start_positions(width, height, window_size, Axis.Y, overlapping_percentage)
 
 #    print(x_start_positions)
 #    print(y_start_positions)
 
-total_number_of_patches = len(x_start_positions) * len(y_start_positions)
-tile_number = 1
+  total_number_of_patches = len(x_start_positions) * len(y_start_positions)
+  tile_number = 1
 
 for x_index, x_start_position in enumerate(x_start_positions):
   for y_index, y_start_position in enumerate(y_start_positions):
-  
-  x_end_position = min(width, x_start_position + window_size)
-y_end_position = min(height, y_start_position + window_size)
-patch_width = x_end_position - x_start_position
-patch_height = y_end_position - y_start_position
-
+    x_end_position = min(width, x_start_position + window_size)
+    y_end_position = min(height, y_start_position + window_size)
+    patch_width = x_end_position - x_start_position
+    patch_height = y_end_position - y_start_position
+    
 SVS_level_ratio = get_SVS_level_ratio(resolution_level)
 patch = img.read_region((x_start_position * SVS_level_ratio, y_start_position * SVS_level_ratio),
                         resolution_level,

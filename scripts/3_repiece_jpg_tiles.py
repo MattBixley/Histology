@@ -5,12 +5,12 @@ from os import listdir
 from os.path import isfile, join, isdir
 
 import numpy as np
-from scipy.misc import imsave
+#from scipy.misc import imsave
 from PIL import Image
 from random import randint
 import time
 from scipy.stats import mode
-import cv2
+#import cv2
 import openslide
 
 import skimage.measure
