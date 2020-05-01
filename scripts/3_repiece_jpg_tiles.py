@@ -1,4 +1,5 @@
 import os
+os.add_dll_directory(r'C:\Users\Matt\AppData\Local\Programs\Python\Python38\Lib\site-packages\openslide-win64-20171122\bin')
 import sys
 import argparse
 from os import listdir

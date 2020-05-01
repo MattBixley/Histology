@@ -55,5 +55,7 @@ mv **/*.svs /path/to/single/target/directory/
 highlight is the term in the clinical file to match 
 *TCGA-HF-7134*-01Z-00-DX1.A84E2A6E-05F4-4A4B-8F64-9B9D1B33838E.svs
 
-
-
+downloaded windows openslide to the path below then added the path at the start of python scripts which allows it to find the correct dll and run the code
+import os
+os.add_dll_directory(r'C:\Users\Matt\AppData\Local\Programs\Python\Python38\Lib\site-packages\openslide-win64-20171122\bin')
+ 

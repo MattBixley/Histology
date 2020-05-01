@@ -18,7 +18,8 @@ batch_size <- 8
 channels <- 3
 
 # path to image folders
-path <- "data/stomach"
+#path <- "data/stomach"
+path <- "data"
 train_directory <- file.path(path, "training")
 test_directory <- file.path(path, "test")
 
