@@ -20,7 +20,7 @@ channels <- 3
 # path to image folders
 #path <- "data/stomach"
 path <- "data"
-train_directory <- file.path(path, "training")
+train_directory <- file.path(path, "train")
 test_directory <- file.path(path, "test")
 
 # optional data augmentation
@@ -68,13 +68,14 @@ train_image_array_gen$class_indices
 ### model definition
 
 # number of training samples
-train_samples <- 1 # train_image_array_gen$n
+train_samples <- 10 # train_image_array_gen$n
 # number of validation samples
-validation_samples <- 1 # valid_image_array_gen$n
+validation_samples <- 10 # valid_image_array_gen$n
 
 ################### Section 2 #########################
 #base_model <- application_inception_v3(weights = 'imagenet', include_top = FALSE)
 base_model <- application_vgg16(weights = 'imagenet', include_top = FALSE, input_shape = c(img_width,img_height,3))
+
 ### use vgg16 -  as inception won't converge --- 
 
 ################### Section 3 #########################

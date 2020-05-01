@@ -6,15 +6,16 @@ library(ggplot2)
 library(glue)
 
 # define the directories:
-image_dir <- here::here("data", "stomach")
-train_dir <- file.path(image_dir, "training")
+image_dir <- here::here("data")
+train_dir <- file.path(image_dir, "train")
 valid_dir <- file.path(image_dir, "validation")
 test_dir <- file.path(image_dir, "test")
 
-classes <- c("censured", "alive")
-total_train <- 2
-total_valid <- 2
-total_test <- 2
+classes <- c("dead", "alive")
+total_train <- 10
+total_valid <- 10
+total_test <- 10
+target_size <- c(255,255)
 
 for (class in classes) {
   # how many images in each class
@@ -48,7 +49,7 @@ par(op)
 
 model <- keras_model_sequential() %>%
   layer_conv_2d(filters = 64, kernel_size = c(3, 3), activation = "relu", 
-                input_shape = c(150, 150, 3)) %>%
+                input_shape = c(target_size, 3)) %>%
   layer_max_pooling_2d(pool_size = c(2, 2)) %>%
   
   layer_conv_2d(filters = 128, kernel_size = c(3, 3), activation = "relu") %>% 
@@ -91,8 +92,8 @@ test_datagen <- image_data_generator(rescale = 1/255)
 train_generator <- flow_images_from_directory(
   train_dir,
   train_datagen,
-  target_size = c(150, 150),
-  batch_size = 8, # edit batch size to smaller than sample size
+  target_size = target_size,
+  batch_size = 32, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
@@ -100,15 +101,15 @@ train_generator <- flow_images_from_directory(
 test_generator <- flow_images_from_directory(
   test_dir,
   test_datagen,
-  target_size = c(150, 150),
-  batch_size = 8, # edit batch size to smaller than sample size
+  target_size = target_size,
+  batch_size = 32, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
 history <- model %>% fit_generator(
   train_generator,
   steps_per_epoch = ceiling(total_train / 1),
-  epochs = 9,
+  epochs = 5,
   validation_data = test_generator,
   validation_steps = ceiling(total_test / 1),
   callbacks = list(
