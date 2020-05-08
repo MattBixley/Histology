@@ -6,15 +6,15 @@ library(ggplot2)
 library(glue)
 
 # define the directories:
-image_dir <- here::here("data")
+image_dir <- "E:/stomach"
 train_dir <- file.path(image_dir, "train")
 valid_dir <- file.path(image_dir, "validation")
 test_dir <- file.path(image_dir, "test")
 
 classes <- c("dead", "alive")
-total_train <- 10
-total_valid <- 10
-total_test <- 10
+total_train <- 300
+total_valid <- 100
+total_test <- 100
 target_size <- c(255,255)
 
 for (class in classes) {
