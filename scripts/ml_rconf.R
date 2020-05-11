@@ -12,9 +12,9 @@ valid_dir <- file.path(image_dir, "validation")
 test_dir <- file.path(image_dir, "test")
 
 classes <- c("dead", "alive")
-total_train <- 300
-total_valid <- 100
-total_test <- 100
+total_train <- 330
+total_valid <- 110
+total_test <- 110
 target_size <- c(255,255)
 
 for (class in classes) {
