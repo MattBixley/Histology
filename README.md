@@ -50,6 +50,10 @@ python wsi_svs_to_jpeg_tiles.py  -i /path/to/svs_image_directory -o /path/to/jpe
 python /c/Users/Matt/Documents/R/Histology/scripts/2_svs_to_jpg_tiles.py \
   --input /e/stomach/test/alive/ \
   --output /e/stomach/test/alive/
+  
+python /c/Users/Matt/Documents/R/Histology/scripts/3_repiece_jpg_tiles.py \
+  --input /e/stomach/test_copy/alive/ \
+  --output /e/stomach/test_copy/alive/
 
 # move files
 find . -name '*.svs' -exec mv {} /path/to/single/target/directory/ \;
