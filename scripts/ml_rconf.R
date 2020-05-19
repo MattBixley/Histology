@@ -6,7 +6,8 @@ library(ggplot2)
 library(glue)
 
 # define the directories:
-image_dir <- "E:/stomach"
+#image_dir <- "E:/stomach"
+image_dir <- "/media/xsan/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/data/stomach"
 train_dir <- file.path(image_dir, "train")
 valid_dir <- file.path(image_dir, "validation")
 test_dir <- file.path(image_dir, "test")
@@ -16,6 +17,8 @@ total_train <- 330
 total_valid <- 110
 total_test <- 110
 target_size <- c(255,255)
+batch <- 256
+
 
 for (class in classes) {
   # how many images in each class
@@ -93,7 +96,7 @@ train_generator <- flow_images_from_directory(
   train_dir,
   train_datagen,
   target_size = target_size,
-  batch_size = 32, # edit batch size to smaller than sample size
+  batch_size = batch, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
@@ -102,7 +105,7 @@ test_generator <- flow_images_from_directory(
   test_dir,
   test_datagen,
   target_size = target_size,
-  batch_size = 32, # edit batch size to smaller than sample size
+  batch_size = batch, # edit batch size to smaller than sample size
   class_mode = "categorical"
 )
 
