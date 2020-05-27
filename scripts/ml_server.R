@@ -7,42 +7,33 @@ library(keras)
 library(tidyverse)
 
 # define the directories:
-#image_dir <- "E:/stomach"
-image_dir <- "/media/xsan/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/data/stomach"
-#image_dir <- "data/stomach"
+# "/Volumes/userdata/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/"
+image_dir <- "data/stomach"
 train_dir <- file.path(image_dir, "train")
-valid_dir <- file.path(image_dir, "validation")
 test_dir <- file.path(image_dir, "test")
 
 classes <- c("dead", "alive")
 total_train <- 330
-total_valid <- 110
 total_test <- 110
 target_size <- c(255,255)
 batch <- 128
 
-
 for (class in classes) {
   # how many images in each class
   n_train <- length(list.files(file.path(train_dir, class)))
-  n_valid <- length(list.files(file.path(valid_dir, class)))
   n_test <- length(list.files(file.path(test_dir, class)))
   
   cat(toupper(class), ": ", 
       "train (", n_train, "), ", 
-      "valid (", n_valid, "), ", 
       "test (", n_test, ")", "\n", sep = "")
   
   # tally up totals
   total_train <- total_train + n_train
-  total_valid <- total_valid + n_valid
   total_test <- total_test + n_test
 }
 
 cat("\n", "total training images: ", total_train, "\n",
-    "total validation images: ", total_valid, "\n",
     "total test images: ", total_test, sep = "")
-
 
 model <- keras_model_sequential() %>%
   layer_conv_2d(filters = 64, kernel_size = c(3, 3), activation = "relu", 
