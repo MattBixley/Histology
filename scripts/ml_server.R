@@ -1,9 +1,10 @@
-# notes from rconf ML workshop
+# ml_server
+
+# adapted from
 # https://rstudio-conf-2020.github.io/dl-keras-tf/notebooks/project1-natural-images.nb.html
 
 library(keras)
-library(ggplot2)
-library(glue)
+library(tidyverse)
 
 # define the directories:
 #image_dir <- "E:/stomach"
@@ -42,14 +43,6 @@ cat("\n", "total training images: ", total_train, "\n",
     "total validation images: ", total_valid, "\n",
     "total test images: ", total_test, sep = "")
 
-op <- par(mfrow = c(2, 4), mar = c(0.5, 0.2, 1, 0.2))
-for (class in classes) {
-  image_path <- list.files(file.path(train_dir, class), full.names = TRUE)[[1]]
-  plot(as.raster(tiff::readTIFF(image_path, native = TRUE)))
-  title(main = class)
-}
-
-par(op)
 
 model <- keras_model_sequential() %>%
   layer_conv_2d(filters = 64, kernel_size = c(3, 3), activation = "relu", 
@@ -126,7 +119,7 @@ best_epoch <- which.min(history$metrics$val_loss)
 best_loss <- history$metrics$val_loss[best_epoch] %>% round(3)
 best_acc <- history$metrics$val_accuracy[best_epoch] %>% round(3)
 
-glue("Our optimal loss is {best_loss} with an accuracy of {best_acc}")
+print(paste0("Our optimal loss is ",best_loss," with an accuracy of ",best_acc))
 
 plot(history) + 
   scale_x_continuous(limits = c(0, length(history$metrics$val_loss)))
@@ -142,7 +135,7 @@ conv_base <- application_vgg16(
 summary(conv_base)
 
 datagen <- image_data_generator(rescale = 1/255)
-batch_size <- 128
+batch_size <- 1
 
 extract_features <- function(directory, sample_count, shuffle = TRUE) {
   features <- array(0, dim = c(sample_count, 4, 4, 512))
