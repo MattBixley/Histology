@@ -9,6 +9,7 @@ library(tidyverse)
 # define the directories:
 # "/Volumes/userdata/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/"
 image_dir <- "data/stomach"
+image_dir <- "/media/xsan/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/data/stomach"
 train_dir <- file.path(image_dir, "train")
 test_dir <- file.path(image_dir, "test")
 
@@ -35,23 +36,15 @@ for (class in classes) {
 cat("\n", "total training images: ", total_train, "\n",
     "total test images: ", total_test, sep = "")
 
+# simple model for testing
 model <- keras_model_sequential() %>%
   layer_conv_2d(filters = 64, kernel_size = c(3, 3), activation = "relu", 
                 input_shape = c(target_size, 3)) %>%
   layer_max_pooling_2d(pool_size = c(2, 2)) %>%
-  
-  layer_conv_2d(filters = 128, kernel_size = c(3, 3), activation = "relu") %>% 
-  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
-  
-  layer_conv_2d(filters = 256, kernel_size = c(3, 3), activation = "relu") %>% 
-  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
-  
-  layer_conv_2d(filters = 512, kernel_size = c(3, 3), activation = "relu") %>% 
-  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
-  
+
   layer_flatten() %>%
   layer_dropout(rate = 0.2) %>%
-  layer_dense(units = 512, activation = "relu") %>%
+  layer_dense(units = 128, activation = "relu") %>%
   layer_dense(units = length(classes), activation = "softmax")
 
 summary(model)
@@ -96,10 +89,10 @@ test_generator <- flow_images_from_directory(
 
 history <- model %>% fit_generator(
   train_generator,
-  steps_per_epoch = ceiling(total_train / 1),
+  steps_per_epoch = ceiling(total_train / batch),
   epochs = 10,
   validation_data = test_generator,
-  validation_steps = ceiling(total_test / 1),
+  validation_steps = ceiling(total_test / batch),
   callbacks = list(
     callback_reduce_lr_on_plateau(patience = 3),
     callback_early_stopping(patience = 7)
