@@ -9,7 +9,7 @@ library(tidyverse)
 # define the directories:
 # "/Volumes/userdata/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/"
 image_dir <- "data/stomach"
-image_dir <- "/media/xsan/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/data/stomach"
+#image_dir <- "/media/xsan/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/data/stomach"
 train_dir <- file.path(image_dir, "train")
 test_dir <- file.path(image_dir, "test")
 
@@ -17,7 +17,7 @@ classes <- c("dead", "alive")
 total_train <- 330
 total_test <- 110
 target_size <- c(255,255)
-batch <- 128
+batch <- 64
 
 for (class in classes) {
   # how many images in each class

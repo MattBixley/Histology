@@ -65,4 +65,13 @@ highlight is the term in the clinical file to match
 downloaded windows openslide to the path below then added the path at the start of python scripts which allows it to find the correct dll and run the code
 import os
 os.add_dll_directory(r'C:\Users\Matt\AppData\Local\Programs\Python\Python38\Lib\site-packages\openslide-win64-20171122\bin')
+
+## create conda environment
+source /Volumes/scratch/Anaconda/etc/profile.d/conda.sh
+conda create -n histology python=3.7 packagelist packageversion=1.1.1
+conda activate histology
+conda install pandas=0.24.1       # insatll packages once environment is open
+conda env export --file environment.yml   
+conda deactivate
+
  
