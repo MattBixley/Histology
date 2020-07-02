@@ -1,0 +1,24 @@
+source /Volumes/scratch/Anaconda/etc/profile.d/conda.sh
+conda create -n tf tensorflow
+conda activate tf
+conda deactivate
+
+#conda create -n tf-gpu tensorflow-gpu
+#conda activate tf-gpu
+
+conda install -c conda-forge r-base # R 4.0.2 # only needs to be done once
+conda install pillow
+
+install.packages('tidyverse')
+install.packages('devtools')
+library(devtools)
+
+devtools::install_github("rstudio/reticulate")
+devtools::install_github('rstudio/keras')
+devtools::install_github('rstudio/tensorflow')
+
+tensorflow::tf_config()
+reticulate::py_config()
+
+use_condaenv("r-tensorflow") # add at start of R script when calling libraries
+

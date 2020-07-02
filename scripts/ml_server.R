@@ -5,6 +5,7 @@
 
 library(keras)
 library(tidyverse)
+use_condaenv("r-tensorflow")
 
 # define the directories:
 # "/Volumes/userdata/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/"
@@ -17,7 +18,7 @@ classes <- c("dead", "alive")
 total_train <- 330
 total_test <- 110
 target_size <- c(255,255)
-batch <- 64
+batch <- 8
 
 for (class in classes) {
   # how many images in each class
@@ -38,20 +39,43 @@ cat("\n", "total training images: ", total_train, "\n",
 
 # simple model for testing
 model <- keras_model_sequential() %>%
-  layer_conv_2d(filters = 64, kernel_size = c(3, 3), activation = "relu", 
+  layer_conv_2d(filters = 128, kernel_size = c(3, 3), activation = "relu", 
                 input_shape = c(target_size, 3)) %>%
-  layer_max_pooling_2d(pool_size = c(2, 2)) %>%
-
+  
+  # Second hidden layer
+  layer_conv_2d(filter = 32, kernel_size = c(3,3)) %>%
+  layer_activation("relu") %>%
+  
+  # Use max pooling
+  layer_max_pooling_2d(pool_size = c(2,2)) %>%
+  layer_dropout(0.25) %>%
+  
+  # 2 additional hidden 2D convolutional layers
+  layer_conv_2d(filter = 32, kernel_size = c(3,3), padding = "same", activation = "relu") %>%
+  layer_conv_2d(filter = 32, kernel_size = c(3,3), padding = "same", activation = "relu") %>%
+  
+  # Use max pooling once more
+  layer_max_pooling_2d(pool_size = c(2,2)) %>%
+  layer_dropout(0.25) %>%
+  
+  # Flatten max filtered output into feature vector 
+  # and feed into dense layer
   layer_flatten() %>%
-  layer_dropout(rate = 0.2) %>%
-  layer_dense(units = 128, activation = "relu") %>%
-  layer_dense(units = length(classes), activation = "softmax")
+  layer_dense(512) %>%
+  layer_activation("relu") %>%
+  layer_dropout(0.5) %>%
+  
+  # final output
+  layer_dense(units = length(classes), activation = "softmax", trainable = T)
 
 summary(model)
 
+opt <- optimizer_rmsprop(lr = 0.0001, decay = 1e-6)
+opt <- 'rmsprop'
+
 model %>% compile(
   loss = "categorical_crossentropy",
-  optimizer = "rmsprop",
+  optimizer = opt,
   metrics = "accuracy"
 )
 
@@ -90,7 +114,7 @@ test_generator <- flow_images_from_directory(
 history <- model %>% fit_generator(
   train_generator,
   steps_per_epoch = ceiling(total_train / batch),
-  epochs = 10,
+  epochs = 75,
   validation_data = test_generator,
   validation_steps = ceiling(total_test / batch),
   callbacks = list(

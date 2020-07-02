@@ -68,10 +68,17 @@ os.add_dll_directory(r'C:\Users\Matt\AppData\Local\Programs\Python\Python38\Lib\
 
 ## create conda environment
 source /Volumes/scratch/Anaconda/etc/profile.d/conda.sh
+
+conda create --name histology python=3.5
 conda create -n histology python=3.7 packagelist packageversion=1.1.1
 conda activate histology
 conda install pandas=0.24.1       # insatll packages once environment is open
 conda env export --file environment.yml   
-conda deactivate
+conqda deactivate
 
- 
+### tensorflow versions
+https://docs.anaconda.com/anaconda/user-guide/tasks/tensorflow/
+https://tensorflow.rstudio.com/reference/keras/install_keras/
+
+RROR: tensorflow 2.2.0 has requirement scipy==1.4.1; python_version >= "3", but you'll have scipy 1.5.0 which is incompatible
+
