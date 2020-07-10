@@ -68,6 +68,21 @@ model <- keras_model_sequential() %>%
   # final output
   layer_dense(units = length(classes), activation = "softmax", trainable = T)
 
+# simple model for testing
+model <- keras_model_sequential() %>%
+  layer_conv_2d(filters = 65536, kernel_size = c(3, 3), activation = "relu", 
+                input_shape = c(target_size, 3)) %>%
+  
+  # Flatten max filtered output into feature vector 
+  # and feed into dense layer
+  layer_flatten() %>%
+  layer_sparse(128) %>%
+  layer_activation("relu") %>%
+  layer_dropout(0.5) %>%
+  
+  # final output
+  layer_dense(units = length(classes), activation = "softmax", trainable = T)
+
 summary(model)
 
 opt <- optimizer_rmsprop(lr = 0.0001, decay = 1e-6)
