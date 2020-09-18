@@ -1,4 +1,8 @@
 # ml_server
+# transfer files from the categories to the continuous
+# cp -a stomach/test/alive/. stomach_continuous/test
+# repeat for dead and for training
+
 
 # adapted from
 # https://rstudio-conf-2020.github.io/dl-keras-tf/notebooks/project1-natural-images.nb.html
@@ -9,12 +13,12 @@ use_condaenv("r-tensorflow")
 
 # define the directories:
 # "/Volumes/userdata/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/"
-image_dir <- "data/stomach"
+image_dir <- "data/stomach_continuous"
 #image_dir <- "/media/xsan/staff_groups/merrimanlab/Merriman_Documents/Matt/Histology/data/stomach"
 train_dir <- file.path(image_dir, "train")
 test_dir <- file.path(image_dir, "test")
 
-classes <- c("dead", "alive")
+#classes <- c("dead", "alive")
 total_train <- 330
 total_test <- 110
 target_size <- c(255,255)

@@ -81,4 +81,3 @@ https://docs.anaconda.com/anaconda/user-guide/tasks/tensorflow/
 https://tensorflow.rstudio.com/reference/keras/install_keras/
 
 RROR: tensorflow 2.2.0 has requirement scipy==1.4.1; python_version >= "3", but you'll have scipy 1.5.0 which is incompatible
-
