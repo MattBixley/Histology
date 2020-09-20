@@ -1,3 +1,5 @@
+[![hackmd-github-sync-badge](https://hackmd.io/XwZwgeLYSMm5QzqFmDsWpA/badge)](https://hackmd.io/XwZwgeLYSMm5QzqFmDsWpA)
+
 # Histology
 Naive classification of histology slides.
 
@@ -74,10 +76,13 @@ conda create -n histology python=3.7 packagelist packageversion=1.1.1
 conda activate histology
 conda install pandas=0.24.1       # insatll packages once environment is open
 conda env export --file environment.yml   
-conqda deactivate
+conda deactivate
 
 ### tensorflow versions
 https://docs.anaconda.com/anaconda/user-guide/tasks/tensorflow/
 https://tensorflow.rstudio.com/reference/keras/install_keras/
 
 RROR: tensorflow 2.2.0 has requirement scipy==1.4.1; python_version >= "3", but you'll have scipy 1.5.0 which is incompatible
+
+https://github.com/bryanhe/ST-Net
+https://github.com/matterport/Mask_RCNN
