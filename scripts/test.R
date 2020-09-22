@@ -149,7 +149,8 @@ model %>% save_model_hdf5("my_model.h5")
 model <- load_model_hdf5("my_model.h5")
 
 # path to image folders
-test_image_files_path <- "data/fruits-360/Test/"
+#test_image_files_path <- "data/fruits-360/Test/"
+test_image_files_path <- "data/stomach/train"
 
 test_datagen <- image_data_generator(rescale = 1/255)
 
@@ -200,7 +201,7 @@ predictions <- predictions %>%
 
 pred_analysis <- predictions %>%
   mutate(img_id = seq(1:test_generator$n)) %>%
-  gather(pred_lbl, y, Kiwi:Pomegranate) %>%
+  gather(pred_lbl, y, dead:alive) %>%
   group_by(img_id) %>%
   filter(y == max(y)) %>%
   arrange(img_id) %>%

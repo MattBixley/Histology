@@ -1,5 +1,20 @@
 [![hackmd-github-sync-badge](https://hackmd.io/XwZwgeLYSMm5QzqFmDsWpA/badge)](https://hackmd.io/XwZwgeLYSMm5QzqFmDsWpA)
 
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://cran.r-project.org/web/licenses/MIT)
+
+[![](https://img.shields.io/github/last-commit/MattBixley/Histology.svg)](https://github.com/MattBixley/Histology/commits/master)
+
+[![R build status](https://github.com/MattBixley/Histology/workflows/R-CMD-check/badge.svg)](https://github.com/MattBixley/Histology/actions)
+
+[![Dependencies](https://tinyverse.netlify.com/badge/MattBixley/Histology)](https://cran.r-project.org/package=MattBixley/Histology)
+
+[![](https://img.shields.io/github/languages/code-size/MattBixley/Histology.svg)](https://github.com/MattBixley/Histology)
+
+[![](https://codecov.io/gh/MattBixley/Histology/branch/master/graph/badge.svg)](https://codecov.io/gh/MattBixley/Histology)
+
+[![](https://coveralls.io/repos/github/MattBixley/Histology/badge.svg?branch=master)](https://coveralls.io/github/MattBixley/Histology)
+
+
 # Histology
 Naive classification of histology slides.
 
@@ -82,7 +97,7 @@ conda deactivate
 https://docs.anaconda.com/anaconda/user-guide/tasks/tensorflow/
 https://tensorflow.rstudio.com/reference/keras/install_keras/
 
-RROR: tensorflow 2.2.0 has requirement scipy==1.4.1; python_version >= "3", but you'll have scipy 1.5.0 which is incompatible
+ERROR: tensorflow 2.2.0 has requirement scipy==1.4.1; python_version >= "3", but you'll have scipy 1.5.0 which is incompatible
 
 https://github.com/bryanhe/ST-Net
 https://github.com/matterport/Mask_RCNN
