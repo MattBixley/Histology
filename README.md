@@ -1,19 +1,7 @@
 [![hackmd-github-sync-badge](https://hackmd.io/XwZwgeLYSMm5QzqFmDsWpA/badge)](https://hackmd.io/XwZwgeLYSMm5QzqFmDsWpA)
-
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://cran.r-project.org/web/licenses/MIT)
-
 [![](https://img.shields.io/github/last-commit/MattBixley/Histology.svg)](https://github.com/MattBixley/Histology/commits/master)
-
-[![R build status](https://github.com/MattBixley/Histology/workflows/R-CMD-check/badge.svg)](https://github.com/MattBixley/Histology/actions)
-
-[![Dependencies](https://tinyverse.netlify.com/badge/MattBixley/Histology)](https://cran.r-project.org/package=MattBixley/Histology)
-
 [![](https://img.shields.io/github/languages/code-size/MattBixley/Histology.svg)](https://github.com/MattBixley/Histology)
-
-[![](https://codecov.io/gh/MattBixley/Histology/branch/master/graph/badge.svg)](https://codecov.io/gh/MattBixley/Histology)
-
-[![](https://coveralls.io/repos/github/MattBixley/Histology/badge.svg?branch=master)](https://coveralls.io/github/MattBixley/Histology)
-
 
 # Histology
 Naive classification of histology slides.
