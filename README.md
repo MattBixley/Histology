@@ -75,8 +75,8 @@ os.add_dll_directory(r'C:\Users\Matt\AppData\Local\Programs\Python\Python38\Lib\
 source /Volumes/scratch/Anaconda/etc/profile.d/conda.sh
 
 conda create --name histology python=3.5
-conda create -n histology python=3.7 packagelist packageversion=1.1.1
-conda activate histology
+conda create -n tf python=3.7 packagelist packageversion=1.1.1
+conda activate tf (tf-gpu)
 conda install pandas=0.24.1       # insatll packages once environment is open
 conda env export --file environment.yml   
 conda deactivate
@@ -89,3 +89,34 @@ ERROR: tensorflow 2.2.0 has requirement scipy==1.4.1; python_version >= "3", but
 
 https://github.com/bryanhe/ST-Net
 https://github.com/matterport/Mask_RCNN
+
+
+### 3.3 Overview of deep learning system
+Automated deep-learning system for Gleason grading of prostate cancer using biopsies: a diagnostic study
+https://ars.els-cdn.com/content/image/1-s2.0-S1470204519307399-mmc1.pdf
+Our deep learning system consisted of a U-Net4
+that was trained on randomly sampled patches extracted from the training set.
+After the automatic labeling process, the system could be trained on all biopsies, including those with mixed Gleason growth
+patterns. Additional patches were sampled from the hard-negative areas to improve the system’s ability to distinguish tumor
+from benign tissue.
+We followed the original U-Net architecture but experimented with different configurations. Given the importance of
+morphological features in Gleason grading, we focused on multiple depths of the U-Net, combined with different pixel spacings
+for the training data. Experimentation showed the best performance on the tuning set using a depth of six levels, sampled
+patches with a size of 1024 × 1024, and a pixel resolution of 0.96µm. We added additional skip connections within each
+layer block and used up-sampling operations in the expansion path. Adam optimization was used with β1 and β2 set to 0.99,
+a learning rate of 0.0005 and a batch size of 8. The learning rate was halved after every 25 consecutive epochs without
+improvement on the tuning set. We stopped training after 75 epochs without improvement on the tuning set. Adding additional
+training examples from hard negative areas increased the performance of the network, especially in distinguishing between
+benign, inflammatory, and tumorous tissue.
+The network was developed using Keras5
+and6
+. Data augmentation was used to increase the robustness of the network. The
+following augmentation procedures were used: flipping, rotating, scaling, color alterations (hue, saturation, brightness, and
+contrast), alterations in the H&E color space, additive noise, and Gaussian blurring.
+
+
+### also this paper has code
+Artificial intelligence for diagnosis and grading of prostate cancer in biopsies: a population-based, diagnostic study
+https://ars.els-cdn.com/content/image/1-s2.0-S1470204519307387-mmc1.pdf
+https://github.com/PeterStrom/AI_analyses
+
