@@ -1,0 +1,64 @@
+---
+title: "Gastric Cancer"
+author: "Matt Bixley"
+date: "09/10/2020"
+output: 
+  html_document: 
+    toc: yes
+    toc_float: true
+    theme: cerulean
+    df_print: kable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(scales)
+
+data <- read_csv("data/tcga_gastric_cancer_data.csv")
+
+```
+
+# Glimpse
+
+```{r}
+data %>% 
+  glimpse()
+```
+# Tables
+
+# Plots
+```{r}
+# selecting character variables
+data_char <- data %>% 
+    select_if(is.character)
+
+# setting a named vector
+names <- names(data_char)
+names <- set_names(names[4:7])
+```
+```{r plotfunction}
+scale_color <- scale_colour_brewer(palette = "Greens")   
+data %>% 
+    count(LaurenClass) %>% 
+    mutate(prop = n/sum(n)) %>% 
+    ggplot(aes(x = fct_reorder(LaurenClass, prop),
+               y = prop,
+               color = LaurenClass)) +
+    #scale_color_manual(values = scale_color) +
+    geom_segment(aes(xend = LaurenClass, yend = 0),
+                 show.legend = F) +
+    geom_point(aes(size = prop),
+               show.legend = F) +
+    geom_label(aes(label = prop, size = prop*10), 
+               fill = "white", 
+               hjust = "inward",
+               show.legend = F) +
+    labs(
+        x = "Attrition"
+    ) +
+    coord_flip() +
+    theme_minimal()
+```
+
+
