@@ -13,7 +13,9 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(scales)
+library(gt)
+
+scale_color <- "Dark2"
 
 data <- read_csv("data/tcga_gastric_cancer_data.csv")
 
@@ -25,7 +27,46 @@ data <- read_csv("data/tcga_gastric_cancer_data.csv")
 data %>% 
   glimpse()
 ```
+```{r tidy}
+data <- data %>% 
+  select(id, MolecularSubtype, LaurenClass, HPylori, CDH1mutation, CDH1expression, EMTmetagene) %>% 
+  mutate_if(is.character = factor)
+  
+data %>% 
+  head() %>% 
+  gt()
+```
+
+
 # Tables
+```{r table}
+data_sum <- data %>% 
+  group_by(LaurenClass) %>% 
+  summarise(meanCDH1 = mean(CDH1expression, na.rm = T), meanEMT = mean(EMTmetagene, na.rm=T)) 
+
+data_count <- data %>% 
+  group_by(LaurenClass) %>% 
+  count()
+
+left_join(data_sum, data_count) %>% 
+  gt() %>% 
+  tab_style(
+    style = list(
+      cell_borders(
+        sides = "bottom",
+        color = "black",
+        weight = px(3)
+      )
+    ),
+    locations = list(
+      cells_column_labels(
+        columns = gt::everything()
+      )
+    )
+  )
+```
+
+
 
 # Plots
 ```{r}
@@ -35,30 +76,59 @@ data_char <- data %>%
 
 # setting a named vector
 names <- names(data_char)
-names <- set_names(names[4:7])
+names <- set_names(names[5:7])
+names
 ```
-```{r plotfunction}
-scale_color <- scale_colour_brewer(palette = "Greens")   
+```{r plot}
 data %>% 
     count(LaurenClass) %>% 
-    mutate(prop = n/sum(n)) %>% 
+    mutate(prop = n/sum(n)) %>%
+    mutate(prop = round(prop, 2)) %>% 
+    filter(LaurenClass != "NA") %>% 
     ggplot(aes(x = fct_reorder(LaurenClass, prop),
                y = prop,
                color = LaurenClass)) +
-    #scale_color_manual(values = scale_color) +
-    geom_segment(aes(xend = LaurenClass, yend = 0),
-                 show.legend = F) +
-    geom_point(aes(size = prop),
-               show.legend = F) +
+    scale_color_brewer(palette = scale_color) +
+    geom_segment(aes(xend = LaurenClass, yend = 0), show.legend = F) +
+    geom_point(aes(size = prop), show.legend = F) +
     geom_label(aes(label = prop, size = prop*10), 
-               fill = "white", 
-               hjust = "inward",
-               show.legend = F) +
-    labs(
-        x = "Attrition"
-    ) +
+               fill = "white", hjust = "inward", show.legend = F) +
+    labs(x = "LaurenClass") +
     coord_flip() +
-    theme_minimal()
+    theme_bw()
 ```
 
+
+```{r plotfunction}
+# second: plot_function
+plot_frequency <- function(x) {
+    data %>% 
+        count(.data[[x]]) %>% 
+        mutate(prop = n/sum(n)) %>% 
+        mutate(prop = round(prop, 2)) %>% 
+        filter(.data[[x]] != "NA") %>% 
+        ggplot(aes(x = fct_reorder(.data[[x]], prop),y = prop, color = .data[[x]])) +
+        scale_color_brewer(palette = scale_color) +
+        geom_segment(aes(xend = .data[[x]], yend = 0), show.legend = F) +
+        geom_point(aes(size = prop), show.legend = F) +
+        geom_label(aes(label = prop, size = prop*10), 
+                   fill = "white", hjust = "inward",show.legend = F) +
+        labs(x = x) +
+        coord_flip() +
+        theme_bw()
+}
+```
+
+```{r allplots}
+all_plots <- map(names, plot_frequency)
+cowplot::plot_grid(plotlist = all_plots, ncol =1)
+```
+
+# Models
+
+Can expression and other variable predicit lauren class
+
+```{r models}
+library(rand)
+```
 
