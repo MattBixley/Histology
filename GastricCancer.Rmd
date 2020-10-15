@@ -29,8 +29,7 @@ data %>%
 ```
 ```{r tidy}
 data <- data %>% 
-  select(id, MolecularSubtype, LaurenClass, HPylori, CDH1mutation, CDH1expression, EMTmetagene) %>% 
-  mutate_if(is.character = factor)
+  select(id, MolecularSubtype, LaurenClass, HPylori, CDH1mutation, CDH1expression, EMTmetagene)
   
 data %>% 
   head() %>% 
@@ -76,7 +75,7 @@ data_char <- data %>%
 
 # setting a named vector
 names <- names(data_char)
-names <- set_names(names[5:7])
+names <- set_names(names[-1])
 names
 ```
 ```{r plot}
@@ -129,6 +128,11 @@ cowplot::plot_grid(plotlist = all_plots, ncol =1)
 Can expression and other variable predicit lauren class
 
 ```{r models}
-library(rand)
+data_mod <- data %>% 
+  filter(!is.na(LaurenClass)) %>% 
+  mutate_if(is.character, factor)
+
+mod <- lm(LaurenClass ~ CDH1expression, data = data_mod)
+
 ```
 
