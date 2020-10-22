@@ -14,6 +14,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(gt)
+
 data <- read_csv("data/tcga_gastric_cancer_data.csv")
 
 ```
@@ -127,9 +128,17 @@ all_plots <- map(names, plot_frequency)
 cowplot::plot_grid(plotlist = all_plots, ncol =1)
 ```
 
+```{r cdh1}
+data %>% 
+  ggplot(aes(x = CDH1expression, y = EMTmetagene, colour = LaurenClass)) +
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(palette = scale_color)
+```
+
+
 # Models
 
-Can expression and other variable predicit lauren class
+Can expression and other variable predict lauren class
 
 ```{r models}
 data_mod <- data %>% 
