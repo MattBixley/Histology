@@ -5,6 +5,10 @@
 # Removing the fully-connected softmax classifier layer typically used for classification
 # Replacing it with a fully-connected layer with a single node along with a linear activation function.
 # Training the model with a continuous value prediction loss function such as mean squared error, mean absolute error, mean absolute percentage error, etc.
+library(keras)
+library(tensorflow)
+library(tfdatasets)
+library(tidyverse)
 
 cd ~
 git clone https://github.com/emanhamed/Houses-dataset

@@ -14,12 +14,16 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(gt)
-
-scale_color <- "Dark2"
-
 data <- read_csv("data/tcga_gastric_cancer_data.csv")
 
 ```
+
+```{r palette}
+library(Manu)
+scale_color <- get_pal("Kaka")
+print_pal(scale_color)
+```
+
 
 # Glimpse
 
@@ -87,7 +91,7 @@ data %>%
     ggplot(aes(x = fct_reorder(LaurenClass, prop),
                y = prop,
                color = LaurenClass)) +
-    scale_color_brewer(palette = scale_color) +
+    scale_colour_manual(values = scale_color) +
     geom_segment(aes(xend = LaurenClass, yend = 0), show.legend = F) +
     geom_point(aes(size = prop), show.legend = F) +
     geom_label(aes(label = prop, size = prop*10), 
@@ -107,7 +111,7 @@ plot_frequency <- function(x) {
         mutate(prop = round(prop, 2)) %>% 
         filter(.data[[x]] != "NA") %>% 
         ggplot(aes(x = fct_reorder(.data[[x]], prop),y = prop, color = .data[[x]])) +
-        scale_color_brewer(palette = scale_color) +
+        scale_colour_manual(values = scale_color) +
         geom_segment(aes(xend = .data[[x]], yend = 0), show.legend = F) +
         geom_point(aes(size = prop), show.legend = F) +
         geom_label(aes(label = prop, size = prop*10), 
